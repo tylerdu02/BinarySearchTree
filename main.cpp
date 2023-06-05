@@ -34,7 +34,6 @@ int main() {
 
     while (running == true) { 
       cout << "Add, print, file, delete, search, or quit" << endl;
-      cout << "Typing file will use the numbers from the file" << endl;
 
         cin.get(input, 10);
         cin.ignore(1, '\n');
@@ -50,7 +49,7 @@ int main() {
                     Node* newNode = new Node(num);
                     insert(n, newNode);
                 }
-                else if (num == 0) { // done inputting numbers
+                else if (num == 0) { 
                     done = true;
                 }
                  else {
@@ -58,8 +57,8 @@ int main() {
                 }
             }
         }
-        if (input[0] == 'F' || input[0] == 'f') { // generates numbers from a file
-            cout << "Numbers from file are in the n" << endl;
+        if (input[0] == 'F' || input[0] == 'f') { // generates numbers from numbers.txt file
+            cout << "Numbers from file are in the tree" << endl;
             ifstream numbers;
             numbers.open("numbers.txt");
             int numnums;
@@ -79,16 +78,104 @@ int main() {
             cin.ignore(1, '\n');
             remove(n, deleteNum);
         }
-        if (input[0] == 'S' || input[0] == 's') { // searches for a value in the tree
+        if (input[0] == 'S' || input[0] == 's') { // search
             int searchNum;
             cout << "What number would you like to search?" << endl;
             cin >> searchNum;
             cin.ignore(1, '\n');
             search(n, searchNum);
         }
-        if (input[0] == 'Q' || input[0] == 'q') { // quits the program
+        if (input[0] == 'Q' || input[0] == 'q') { // quit
             running = false;
         }
     }
 }
- 
+
+void insert(Node* &n, Node* newNode) { // inserts new node into tree
+    if (n == NULL) { 
+        n = newNode;
+    }
+    else if (newNode->data <= n->data) {
+        insert(newNode, n->left); 
+    }
+    else if (newNode->data > n->data) { 
+        insert(newNode, n->right);
+    }
+}
+
+void print(Node* n, int numTabs) { // prints tree in order
+    if (n == NULL) { 
+        return;
+    }
+    numTabs += 10;
+    print(n->right, numTabs); 
+    cout << endl;
+    for (int i = 10; i < numTabs; i++) { 
+        cout << " ";
+    }
+    cout << n->data << endl;
+    print(n->left, numTabs);  
+}
+
+void remove(Node* &n, int value) { // removes value from tree
+    if (n == NULL) { 
+        cout << "Invalid input. Try again." << endl;
+        return;
+    }
+    else if (value < n->data) { 
+        remove(n->left, value); 
+    }
+    else if (value > n->data) { 
+        remove(n->right, value);
+    }
+    else if (value == n->data) { 
+        if (n->left == NULL && n->right == NULL) { 
+            cout << "Deleted number: " << value << endl;
+            delete n;
+            n = NULL;
+        }
+        else if (n->left == NULL) { 
+            cout << "Deleted number: " << value << endl;
+            Node* temp = n;
+            n = n->right;
+            delete temp;
+        }
+        else if (n->right == NULL) { 
+            cout << "Deleted number: " << value << endl;
+            Node* temp = n;
+            n = n->left;
+            delete temp;
+        }
+        else { 
+            cout << "Deleted number: " << value << endl;
+            Node* temp = n->right;
+            while (temp->left != NULL) {
+                temp = temp->left;
+            }
+            n->data = temp->data;
+            remove(n->right, temp->data);
+        }
+    }
+    else { 
+        cout << "Invalid input. Try again." << endl;
+    }
+}
+
+void search(Node* n, int value) { // searches for a value 
+    if (n == NULL) { 
+        cout << "Invalid input. Try again." << endl;
+        return;
+    }
+    else if (value < n->data) { 
+        search(n->left, value);
+    }
+    else if (value > n->data) { 
+        search(n->right, value);
+    }
+    else if (value == n->data) { 
+        cout << "Number: " << value << endl;
+    }
+    else { 
+        cout << "Invalid input. Try again." << endl;
+    }
+}
