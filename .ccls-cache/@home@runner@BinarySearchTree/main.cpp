@@ -96,10 +96,10 @@ void insert(Node* &n, Node* newNode) { // inserts new node into tree
         n = newNode;
     }
     else if (newNode->data <= n->data) {
-        insert(newNode, n->left); 
+        insert(n->left, newNode); 
     }
     else if (newNode->data > n->data) { 
-        insert(newNode, n->right);
+        insert(n->right, newNode);
     }
 }
 
